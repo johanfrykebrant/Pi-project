@@ -24,11 +24,15 @@ GET /api/version/{version}/parameter/{parameter}/station/52350/period/{period}/d
 7 = Nederbördsmängd
 
 """
+#The timestamp of the historical weather data points obtained from the SMHI API are in epoch.
+#This function converts the timestamp from epoch to datetime.
 def EpochToDate(jobj):
     d = jobj["value"][0]['date']/1000
     t = datetime.fromtimestamp(d).strftime('%Y-%m-%d %H:%M:%S')
     return t
 
+#The timestamp of the forecasts obtained from the SMHI API are in string.
+#This function converts the timestamp from string to datetime.
 def StrToDate(string):
     dateStr = string[1:11] + ' ' + string[12:20]
     t = datetime.strptime(dateStr, '%Y-%m-%d %H:%M:%S')
