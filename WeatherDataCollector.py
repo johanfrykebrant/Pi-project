@@ -36,6 +36,7 @@ else:
     time = tempData[0]
     temp = tempData[1]
     rain = rainData[1]
+    
     # --- Insert Data in SQL server ---
     #Time datetime, Temperature DECIMAL(4,2),Percipitation 
     mycursor.execute("INSERT INTO Station (Time, Temperature, Percipitation) VALUES (%s,%s,%s)", (time,temp,rain))
