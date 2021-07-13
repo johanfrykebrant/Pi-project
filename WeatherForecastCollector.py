@@ -6,7 +6,7 @@ import API
 import logging
 
 # --- Configuring logging ---
-logging.basicConfig(filename='Error.log', level=logging.WARNING,
+logging.basicConfig(filename='/Projects/Error.log', level=logging.WARNING,
                     format='%(asctime)s:%(levelname)s:%(message)s')
 
 # --- Fetching config parameters ---
