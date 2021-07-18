@@ -2,7 +2,7 @@ import mysql.connector
 from datetime import datetime
 import numpy as np
 import json
-import API
+import SmhiAPI as API
 import logging
 
 # --- Configuring logging ---
