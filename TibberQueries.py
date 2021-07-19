@@ -1,6 +1,7 @@
 import json
 from os.path import dirname, join
-# Defining graphQL queries and attributes to save space in main code  
+
+# Defining graphQL queries and attributes to save space in TibberAPI.py code  
 current_dir = dirname(__file__)
 file_path = join(current_dir, "./test.config")
 
