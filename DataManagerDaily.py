@@ -1,3 +1,0 @@
-import PowerDataCollector
-
-PowerDataCollector.Daily()
