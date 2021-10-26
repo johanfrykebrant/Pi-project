@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import sql_writer 
 import api_handler
+from datetime import datetime
 
 PRICE_NAMES = ['time', 'kwh']
 
@@ -13,6 +14,10 @@ def main():
     
     sql.terminate_connection()
     
+    now = datetime.now()
+    file = open("test.txt","a")
+    file.write("I ran succesfully i belive @ " + str(now)+  "\n")
+    file.close()
     
 
 if __name__ == "__main__":

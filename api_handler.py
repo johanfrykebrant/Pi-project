@@ -81,6 +81,7 @@ class TibberApi:
       response = self.run_query(self.CONSUMPTION)
       consumption_dict = response["data"]["viewer"]["homes"][0]["consumption"]["nodes"]
       consumption = []
+      
       for cons in consumption_dict:
           value = cons["consumption"]
           if not (value == None):
