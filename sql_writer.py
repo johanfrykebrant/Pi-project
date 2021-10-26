@@ -1,19 +1,15 @@
 import mysql.connector
-from datetime import datetime
-import numpy as np
 import json
 import logging
 
 class Writer:
       
     def __init__(self):
-        # --- Configuring logging ---
         logging.basicConfig(filename='./error.log', level=logging.WARNING,
                             format='%(asctime)s:%(levelname)s:%(message)s')
 
-        # --- Fetching config parameters ---
         try:    
-            with open("/home/pi/Projects/.config") as json_data_file:
+            with open("/home/pi/Projects/Dashboard-backend/.config") as json_data_file:
                 data = json.load(json_data_file)
         except Exception as e:
             logging.error(e)
@@ -27,7 +23,8 @@ class Writer:
             )
 
             self.cur = self.con.cursor()
-       
+
+           
     def __build_string(self,table,names):
         v = ""
         s = ""
@@ -47,17 +44,27 @@ class Writer:
 
         self.cur.execute(command_string,values)
         self.con.commit()
-        
+        return
+    
     def write_many(self,table,names,values):
         command_string = self.__build_string(table,names)
+        
         for value in values:
             self.cur.execute(command_string,value)
             self.con.commit()
-            
+        return
         
     def terminate_connection(self):
         self.cur.close()
         self.con.close()
-        pass
+        return
+
+def main():
+    sql = Writer()
+
+if __name__ == "__main__":
+    main()
+
+
         
 

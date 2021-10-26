@@ -60,9 +60,9 @@ class TibberApi:
             raise Exception("Query failed to run by returning code of {}. {}".format(request.status_code, query))
 
     def StrToDate(self,string):
-      dateStr = string[0:10] + ' ' + string[11:19]
-      t = datetime.strptime(dateStr, '%Y-%m-%d %H:%M:%S')
-      return t
+        dateStr = string[0:10] + ' ' + string[11:19]
+        t = datetime.strptime(dateStr, '%Y-%m-%d %H:%M:%S')
+        return t
 
     def get_prices_tomorrow(self):#Gets the energy prices for the next day and returns them in a list.
       q = self.run_query(self.PRICE)

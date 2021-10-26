@@ -9,14 +9,12 @@ ENERGY_NAMES = ['time', 'kwh']
 
 def main():
     smhi_api = api_handler.SmhiApi()
-    tibber_api = api_handler.TibberApi()
     sql = sql_writer.Writer()
     
     rain = smhi_api.get_rain()
     temperature = smhi_api.get_temp()
     perc_forecast = smhi_api.get_perc_forecast(24)
     temp_forecast = smhi_api.get_temp_forecast(24)
-    energy = tibber_api.get_consumption()
         
     sql.write('station',RAIN_NAMES,rain)
     sql.write('station',TEMP_NAMES,temperature)
