@@ -125,6 +125,7 @@ class SmhiApi:
           'pmedian':	'Median precipitation intensity',
           'Wsymb2':	'Weather symbol'
           }
+          
     def __init__(self):
         pass
  
