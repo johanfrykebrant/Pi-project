@@ -1,17 +1,13 @@
 import requests
 import json
 from os.path import dirname, join
+import matplotlib.pyplot as plt
 from datetime import datetime
 
 
 class TibberApi:
-    current_dir = dirname(__file__)
-    file_path = join(current_dir, "./.config")
 
-    with open(file_path) as json_data_file:
-        data = json.load(json_data_file)
-
-    HEADER = {"Authorization": "Bearer " + data["API keys"]["Tibber"]}
+    HEADER = {"Authorization": "Bearer " + "6xJ8vXFR2YPsX7WyIQMVtBWauHh0lGkS-AogcZljTCE"}
     URL = 'https://api.tibber.com/v1-beta/gql'    
     CONSUMPTION = """{
           viewer {
@@ -50,19 +46,18 @@ class TibberApi:
     def __init__(self):
         pass
 
-
     def run_query(self,query): # A simple function to use requests.post to make the API call.
-        request = requests.post(self.URL, json={'query': query}, headers=self.HEADER)
+      request = requests.post(self.URL, json={'query': query}, headers=self.HEADER)
           
-        if request.status_code == 200:
-            return request.json()
-        else:
-            raise Exception("Query failed to run by returning code of {}. {}".format(request.status_code, query))
+      if request.status_code == 200:
+        return request.json()
+      else:
+        raise Exception("Query failed to run by returning code of {}. {}".format(request.status_code, query))
 
     def StrToDate(self,string):
-        dateStr = string[0:10] + ' ' + string[11:19]
-        t = datetime.strptime(dateStr, '%Y-%m-%d %H:%M:%S')
-        return t
+      dateStr = string[0:10] + ' ' + string[11:19]
+      t = datetime.strptime(dateStr, '%Y-%m-%d %H:%M:%S')
+      return t
 
     def get_prices_tomorrow(self):#Gets the energy prices for the next day and returns them in a list.
       q = self.run_query(self.PRICE)
@@ -80,6 +75,7 @@ class TibberApi:
     def get_consumption(self):
       response = self.run_query(self.CONSUMPTION)
       consumption_dict = response["data"]["viewer"]["homes"][0]["consumption"]["nodes"]
+      #print(json.dumps(consumption_dict, indent=4))
       consumption = []
       
       for cons in consumption_dict:
@@ -98,23 +94,34 @@ class SmhiApi:
     ~Station~
     Malmö = 52350
     GET /api/version/{version}/parameter/{parameter}/station/52350/period/{period}/data.json
-
-    ~Parameter~
-    1 = Lufttemperatur
-    2 = Lufttemperatur
-    4 = Vindriktning
-    3 = Vindhastighet
-    6 = Relativ Luftfuktighet
-    7 = Nederbördsmängd
-
     """
-    SMHI_TEMP_LATESTHOUR = "https://opendata-download-metobs.smhi.se/api/version/latest/parameter/1/station/52350/period/latest-hour/data.json"
-    SMHI_RAIN_LATESTHOUR = "https://opendata-download-metobs.smhi.se/api/version/latest/parameter/7/station/52350/period/latest-hour/data.json"
     SMHI_FORECAST = "https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/13.07/lat/55.6/data.json"
-    SMHI_WIND_DIRECTION_LATESTHOUR = "https://opendata-download-metobs.smhi.se/api/version/latest/parameter/3/station/52350/period/latest-hour/data.json"
-    SMHI_WIND_LATESTHOUR = "https://opendata-download-metobs.smhi.se/api/version/latest/parameter/4/station/52350/period/latest-hour/data.json"
-    SMHI_TEST = "https://opendata-download-metobs.smhi.se/api/version/latest/"
+    SMHI_URL = "https://opendata-download-metobs.smhi.se/api/version/latest/parameter/"
+    END_URL = "/station/52350/period/latest-hour/data.json"
+
     
+    NAME_CODES ={
+          'msl':	'Air pressure',
+          't':	'Air temperature',
+          'vis': 'Horizontal visibility',
+          'wd': 'Wind direction',
+          'ws': 'Wind speed',
+          'r':	'Relative humidity',
+          'tstm': 'Thunder probability',
+          'tcc_mean':	'Mean value of total cloud cover',
+          'lcc_mean':	'Mean value of low level cloud cover',
+          'mcc_mean':	'Mean value of medium level cloud cover',
+          'hcc_mean':	'Mean value of high level',
+          'gust': 'Wind gust speed',
+          'pmin':	'Minimum precipitation intensity',
+          'pmax':	'Maximum precipitation intensity',
+          'spp':	'Percent of precipitation in frozen form',
+          'pcat':	'Precipitation category',
+          'pmean':	'Mean precipitation intensity',
+          'pmedian':	'Median precipitation intensity',
+          'Wsymb2':	'Weather symbol'
+          }
+          
     def __init__(self):
         pass
  
@@ -127,89 +134,45 @@ class SmhiApi:
         dateStr = string[1:11] + ' ' + string[12:20]
         t = datetime.strptime(dateStr, '%Y-%m-%d %H:%M:%S')
         return t
-    
-    def __find_param(self,param_list,param):
-        res = None
-        for sub in param_list:
-            if sub['name'] == param:
-                res = sub
-                break
 
-        return res['values']
-
-    def get_rain(self):
-        response = requests.get(self.SMHI_RAIN_LATESTHOUR)
-        jobj = response.json()
-
-        time = self.__epoch_to_date(jobj)
-        value = jobj["value"][0]['value']
-        return [time, value]
-
-    def get_temp(self):
-        response = requests.get(self.SMHI_TEMP_LATESTHOUR)
-        jobj = response.json()
-
-        time = self.__epoch_to_date(jobj)
-        value = jobj["value"][0]['value']
-        return [time, value]
-    
-    def get_wind(self):
-        response = requests.get(self.SMHI_WIND_LATESTHOUR)
-        jobj = response.json()
-        time = self.__epoch_to_date(jobj)
-        value = jobj["value"][0]['value']
-        return [time, value]
-    
-    def get_wind_direction(self):
-        response = requests.get(self.SMHI_WIND_DIRECTION_LATESTHOUR)
-        jobj = response.json()
-
-        time = self.__epoch_to_date(jobj)
-        value = jobj["value"][0]['value']
-        return [time, value]
-    
-    def get_perc_forecast(self,nbr):
-        HoursInFuture = nbr
-        Categories = ["No percipitation", "Snow", "Snow and rain", "Rain", "Drizzle", "Freezing rain", "Freezing drizzle"]
+    def get_all_measurements(self):
+      url = ""
+      # [time , name , value ]
+      result = list()
+      nbr_of_parameters = 26
+      for nbr in range(1,nbr_of_parameters):
         
-        response = requests.get(self.SMHI_FORECAST)
-        jobj = response.json()
+        url = self.SMHI_URL + str(nbr) + self.END_URL
+        r = requests.get(url)
         
-        ValidTime = self.__str_to_date(json.dumps(jobj["timeSeries"][HoursInFuture]["validTime"]))
-        param_list = jobj["timeSeries"][HoursInFuture]["parameters"]
-        PercentFrozen = self.__find_param(param_list,'spp')[0]
-        #If no frozen percipitation PercentFrozen will be -9
-        if PercentFrozen == -9:
-            PercentFrozen = 0
-        
-        PercCat = self.__find_param(param_list,'pcat')[0]
-        PercCat = Categories[int(PercCat)]
-        Pmin = self.__find_param(param_list,'pmin')[0]
-        Pmean = self.__find_param(param_list,'pmean')[0]
-        Pmax = self.__find_param(param_list,'pmax')[0]
+        if not(r.status_code == 404): 
+          jobj = r.json()
+          time = self.__epoch_to_date(jobj)
+          value = jobj["value"][0]["value"]
+          name = jobj["parameter"]["name"]
+          unit = jobj["parameter"]["unit"]
+          result.append([time,name,value,unit])
+      
+      return result
 
-        return [ValidTime, Pmin, Pmean, Pmax, PercCat, PercentFrozen]
-        
-    def get_temp_forecast(self,nbr):
-        HoursInFuture = nbr
-        response = requests.get(self.SMHI_FORECAST)
-        jobj = response.json()
-        param_list = jobj["timeSeries"][HoursInFuture]["parameters"]
+    def get_all_forecasts(self):
+      response = requests.get(self.SMHI_FORECAST)
+      jobj = response.json()
+      result= list()
+      hours_in_future = 24
+      time = self.__str_to_date(json.dumps(jobj["timeSeries"][hours_in_future]["validTime"]))
 
-        Temp = self.__find_param(param_list,'t')[0]
-        ValidTime = self.__str_to_date(json.dumps(jobj["timeSeries"][HoursInFuture]["validTime"]))
+      for i in jobj["timeSeries"][24]["parameters"]:
+        name = self.NAME_CODES[i["name"]]
+        unit = i["unit"]
+        value = i["values"][0]
+        result.append([time,name,value,unit])
 
-        return [ValidTime, Temp]
-    
-    def get_test(self):
-        response = requests.get(self.SMHI_TEST)
-        jobj = response.json()
-        print(jobj)
-    
+      return result
+
 def main():
-    api = SmhiApi()
-    api.get_test()
-
+  api = SmhiApi()
+  api.get_all_forecasts()
 
 if __name__ == "__main__":
     main()
