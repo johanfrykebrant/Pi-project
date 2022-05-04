@@ -1,24 +1,28 @@
 import mysql.connector
 import json
 import logging
-import os
 
 class Writer:
       
     def __init__(self):
-        
-        with open("/home/pi/Projects/Dashboard-backend/.config") as json_data_file:
+        logging.basicConfig(filename='./error.log', level=logging.WARNING,
+                            format='%(asctime)s:%(levelname)s:%(message)s')
+
+        try:    
+            with open("/home/pi/Projects/Dashboard-backend/.config") as json_data_file:
                 data = json.load(json_data_file)
+        except Exception as e:
+            logging.error(e)
+        else:
+            # --- Connecting to Database ---
+            self.con = mysql.connector.connect(
+              host= data["mysql"]["host"],
+              user= data["mysql"]["user"],
+              password= data["mysql"]["passwd"],
+              database= data["mysql"]["db"]
+            )
 
-        # --- Connecting to Database ---
-        self.con = mysql.connector.connect(
-          host= data["mysql"]["host"],
-          user= data["mysql"]["user"],
-          password= data["mysql"]["passwd"],
-          database= data["mysql"]["db"]
-        )
-
-        self.cur = self.con.cursor()
+            self.cur = self.con.cursor()
 
            
     def __build_string(self,table,names):
@@ -57,8 +61,6 @@ class Writer:
 
 def main():
     sql = Writer()
-    sql.terminate_connection()
-    print('done')
 
 if __name__ == "__main__":
     main()
