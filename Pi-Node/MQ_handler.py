@@ -16,10 +16,11 @@ class MQ_handler:
             self.config = json.load(json_data_file)
 
         logging.basicConfig(level = self.config["logging"]["level"], filename = self.config["logging"]["filename"],
-                          format = "%(asctime)s | %(name)s | %(levelname)s | %(funcName)s | %(message)s")
+                          format = "%(asctime)s - %(name)s - %(levelname)s - %(funcName)s - %(message)s")
         self.logger = logging.getLogger(__name__)
 
     def consume(self,queue,callbackfunc):
+        #connection = pika.BlockingConnection(pika.ConnectionParameters(self.config["RabbitMQ"]["host"]))
         credentials = pika.PlainCredentials(self.config["RabbitMQ"]["user"], self.config["RabbitMQ"]["passwd"])
         parameters = pika.ConnectionParameters(self.config["RabbitMQ"]["host"],
                                                 self.config["RabbitMQ"]["port"],
@@ -39,8 +40,8 @@ class MQ_handler:
                                 on_message_callback=callbackfunc)
             
             channel.start_consuming()
-        except Exception as e:
-            print(f"Could not consume messages from queue {queue}")
+        except:
+            return False
 
     def produce(self,queue,msg):
             credentials = pika.PlainCredentials(self.config["RabbitMQ"]["user"], self.config["RabbitMQ"]["passwd"])
@@ -62,7 +63,7 @@ class MQ_handler:
                                         )
                 connection.close()
                 return True
-            except Exception as e:
+            except:
                 return False
 
 def main():
@@ -78,7 +79,7 @@ def main():
 
     def callback(ch, method, properties, body):
         print("Received %r" % body)
-    mq.consume("meaggsurements",callback)
+    mq.consume("measurements",callback)
     
 
 if __name__ == '__main__':
