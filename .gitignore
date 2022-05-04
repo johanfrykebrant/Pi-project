@@ -1,2 +1,3 @@
 *.log
-*.config
+Pi-Node/*.config
+Pi-Server/*.config
