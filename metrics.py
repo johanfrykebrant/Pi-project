@@ -23,6 +23,7 @@ def get_metrics():
 
 def main():
     metrics = get_metrics()
+    print(metrics)
 
 if __name__ == "__main__":
     main()
