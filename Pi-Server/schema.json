@@ -1,0 +1,50 @@
+{
+"databases":{
+    "data": {
+        "tables": {
+            "observations": {"collumns": ["timestamp","value","observation_id"],
+                            "ids": {
+                                "Lufttemperatur": "1",
+                                "Vindriktning": "3",
+                                "Vindhastighet": "4",
+                                "Relativ Luftfuktighet": "6",
+                                "Nederbördsmängd": "7",
+                                "Sikt": "12",
+                                "Rådande väder": "13",
+                                "Byvind": "21",
+                                "Max av MedelVindhastighet": "25"}                    
+            },
+        
+            "measurements":{"collumns": ["timestamp","value","measurement_id"],
+                            "ids": {
+                                "Temperature sensor #227": "1"}            
+            },
+    
+            "historic_forecasts":   {"collumns":["timestamp","value","hours_in_future","forecast_id"],
+                                    "ids": {
+                                        "Air pressure":  "1",
+                                        "Air temperature":  "2",
+                                        "Horizontal visibility":  "3",
+                                        "Wind direction":  "4",
+                                        "Wind speed":  "5",
+                                        "Relative humidity":  "6",
+                                        "Thunder probability":  "7",
+                                        "Mean value of total cloud cover":  "8",
+                                        "Mean value of low level cloud cover":  "9",
+                                        "Mean value of medium level cloud cover":  "10",
+                                        "Mean value of high level":  "11",
+                                        "Wind gust speed":  "12",
+                                        "Minimum precipitation intensity":  "13",
+                                        "Maximum precipitation intensity":  "14",
+                                        "Percent of precipitation in frozen form":  "15",
+                                        "Precipitation category":  "16",
+                                        "Mean precipitation intensity":  "17",
+                                        "Median precipitation intensity":  "18",
+                                        "Weather symbol":  "19"}
+            }
+        }
+    }
+}
+}
+
+

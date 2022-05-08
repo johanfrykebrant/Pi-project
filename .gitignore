@@ -1,3 +1,6 @@
 .log
 .config
 .gitignore
+test.py
+Pi-Node/__pycache__
+Pi-Server/__pycache__
