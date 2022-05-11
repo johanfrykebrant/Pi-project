@@ -8,15 +8,7 @@ from os import chdir, getcwd
 class MQ_handler:
 
     def __init__(self):
-        
-        # Create file path for parent dir where .config is located
-        dir = dirname(__file__)
-        chdir(dir)
-        chdir('..')
-        dir = getcwd()
-        file_path = join(dir, ".config") 
-        
-        with open(file_path) as json_data_file:
+        with open(dirname(__file__) + '\..\.config') as json_data_file:
             self.config = json.load(json_data_file)
 
         logging.basicConfig(level = self.config["logging"]["level"], filename = self.config["logging"]["filename"],
@@ -43,6 +35,7 @@ class MQ_handler:
         
         channel.start_consuming()
 
+
     def produce(self,queue,msg):
             credentials = pika.PlainCredentials(self.config["RabbitMQ"]["user"], self.config["RabbitMQ"]["passwd"])
             parameters = pika.ConnectionParameters(self.config["RabbitMQ"]["host"],
@@ -62,6 +55,7 @@ class MQ_handler:
                                     )
             connection.close()
 
+# For testing and debug purposes
 def main():
     mq = MQ_handler()
     
@@ -75,7 +69,7 @@ def main():
 
     def callback(ch, method, properties, body):
         print("Received %r" % body)
-    #mq.consume("measurements",callback)
+    mq.consume("measurements",callback)
     
 
 if __name__ == '__main__':
