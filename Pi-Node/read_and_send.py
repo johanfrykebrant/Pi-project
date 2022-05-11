@@ -1,10 +1,10 @@
-from ds18b20_reader import reader
+from ds18b20_reader import Reader
 from MQ_handler import MQ_handler
 import json
 
 mq = MQ_handler()
-r = reader()
+r = Reader()
 
-msq = r.read_temp()
+msg = r.read_temp()
 mq = MQ_handler()
-mq.produce("measurements",json.dumps(msq,ensure_ascii=False))
+mq.consume("measurements",json.dumps(msg,ensure_ascii=False))
