@@ -1,6 +1,8 @@
+#! /usr/bin/python3
 from MQ_handler import MQ_handler
 import json
 import mysql.connector
+import time
 
 def write_measurement_to_db(ch, method, properties, body):
     body = json.loads(body)
@@ -37,6 +39,10 @@ def write_measurement_to_db(ch, method, properties, body):
     con.commit()
     cur.close()
     con.close()
+
+# Sleeping for 3 minutes so give time for the device to establish network connection on startup.
+# Not very robust or elegant. Can be solved by running script as systemd instead of activating using crontab.
+time.sleep(180)
 
 mq = MQ_handler()
 mq.consume("measurements",write_measurement_to_db)

@@ -1,3 +1,4 @@
+#! /usr/bin/python3
 from ds18b20_reader import Reader
 from MQ_handler import MQ_handler
 import json
