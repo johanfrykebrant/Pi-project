@@ -8,7 +8,7 @@ from os import chdir, getcwd
 class MQ_handler:
 
     def __init__(self):
-        with open(dirname(__file__) + '\..\.config') as json_data_file:
+        with open(join(getcwd() ,'.config')) as json_data_file:
             self.config = json.load(json_data_file)
 
         logging.basicConfig(level = self.config["logging"]["level"], filename = self.config["logging"]["filename"],

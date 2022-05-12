@@ -2,7 +2,6 @@ import mysql.connector
 import json
 import logging
 
-from pyparsing import nested_expr
 
 class SQL_handler:
       

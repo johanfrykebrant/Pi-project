@@ -8,4 +8,4 @@ r = Reader()
 
 msg = r.read_temp()
 mq = MQ_handler()
-mq.consume("measurements",json.dumps(msg,ensure_ascii=False))
+mq.produce("measurements",json.dumps(msg,ensure_ascii=False))

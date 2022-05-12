@@ -2,13 +2,14 @@
 from MQ_handler import MQ_handler
 import json
 import mysql.connector
-import time
+from os.path import join
+from os import getcwd
 
 def write_measurement_to_db(ch, method, properties, body):
     body = json.loads(body)
 
     messages = body["Sensor values"]
-    with open(".config") as json_data_file:
+    with open(join(getcwd() ,'.config')) as json_data_file:
         config = json.load(json_data_file)
             
     # --- Connecting to Database ---
@@ -40,9 +41,6 @@ def write_measurement_to_db(ch, method, properties, body):
     cur.close()
     con.close()
 
-# Sleeping for 3 minutes so give time for the device to establish network connection on startup.
-# Not very robust or elegant. Can be solved by running script as systemd instead of activating using crontab.
-time.sleep(180)
-
 mq = MQ_handler()
 mq.consume("measurements",write_measurement_to_db)
+    
