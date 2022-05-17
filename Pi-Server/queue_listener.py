@@ -41,6 +41,9 @@ def write_measurement_to_db(ch, method, properties, body):
     cur.close()
     con.close()
 
-mq = MQ_handler()
-mq.consume("measurements",write_measurement_to_db)
+def main():
+    mq = MQ_handler()
+    mq.consume("measurements",write_measurement_to_db)
     
+if __name__ == "__main__":
+    main()

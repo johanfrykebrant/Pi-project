@@ -57,12 +57,12 @@ class SmhiApi:
             'Wsymb2': 'Weather symbol',
             }
     @staticmethod
-    def __epoch_to_date(jobj):
+    def epoch_to_date(jobj):
         d = jobj["value"][0]['date']/1000
         dateStr = datetime.fromtimestamp(d).strftime('%Y-%m-%d %H:%M:%S')
         return dateStr
     @staticmethod
-    def __date_str_format(string):
+    def date_str_format(string):
         dateStr = string[1:11] + ' ' + string[12:20]
         return dateStr
 
@@ -87,7 +87,7 @@ class SmhiApi:
 
         if r.status_code == 200: 
           jobj = r.json()
-          temp_dict["timestamp"] = self.__epoch_to_date(jobj)
+          temp_dict["timestamp"] = self.epoch_to_date(jobj)
           temp_dict["value"] = jobj["value"][0]["value"]
           temp_dict["name"] = jobj["parameter"]["name"]
           temp_dict["unit"] = jobj["parameter"]["unit"]
@@ -111,10 +111,9 @@ class SmhiApi:
         self.logger.info(f"{r.request.method} request from {r.url} returned <Response{r.status_code}>") 
         jobj = r.json()
         for hrs in hours_in_future:
-          hrs = hrs + 1
-          time = self.__date_str_format(json.dumps(jobj["timeSeries"][hrs]["validTime"]))
+          time = self.date_str_format(json.dumps(jobj["timeSeries"][hrs + 1]["validTime"]))
 
-          for i in jobj["timeSeries"][hrs]["parameters"]:
+          for i in jobj["timeSeries"][hrs + 1]["parameters"]:
             temp_dict ={ 
               "name" : self.NAME_CODES[i["name"]],
               "timestamp": time,
